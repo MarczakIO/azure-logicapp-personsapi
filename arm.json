@@ -1,0 +1,122 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "logicAppName": {
+        "type": "string",
+        "defaultValue": "apim-persons-api",
+        "metadata": {
+          "description": "Name of the Logic App."
+        }
+      },
+      "logicAppLocation": {
+        "type": "string",
+        "defaultValue": "[resourceGroup().location]",
+        "allowedValues": [
+          "[resourceGroup().location]",
+          "eastasia",
+          "southeastasia",
+          "centralus",
+          "eastus",
+          "eastus2",
+          "westus",
+          "northcentralus",
+          "southcentralus",
+          "northeurope",
+          "westeurope",
+          "japanwest",
+          "japaneast",
+          "brazilsouth",
+          "australiaeast",
+          "australiasoutheast",
+          "westcentralus",
+          "westus2"
+        ],
+        "metadata": {
+          "description": "Location of the Logic App."
+        }
+      }
+    },
+    "variables": {},
+    "resources": [
+      {
+        "type": "Microsoft.Logic/workflows",
+        "apiVersion": "2016-06-01",
+        "name": "[parameters('logicAppName')]",
+        "location": "[parameters('logicAppLocation')]",
+        "dependsOn": [],
+        "properties": {
+          "definition": {
+            "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+            "contentVersion": "1.0.0.0",
+            "parameters": {},
+            "triggers": {
+              "manual": {
+                "type": "Request",
+                "kind": "Http",
+                "inputs": {
+                  "method": "GET",
+                  "schema": {}
+                }
+              }
+            },
+            "actions": {
+              "Compose": {
+                "runAfter": {},
+                "type": "Compose",
+                "inputs": [
+                  {
+                    "Name": "Adam",
+                    "id": 1
+                  },
+                  {
+                    "Name": "Tom",
+                    "id": 2
+                  },
+                  {
+                    "Name": "John",
+                    "id": 3
+                  },
+                  {
+                    "Name": "Kate",
+                    "id": 4
+                  },
+                  {
+                    "Name": "Jessie",
+                    "id": 5
+                  },
+                  {
+                    "Name": "Tina",
+                    "id": 6
+                  },
+                  {
+                    "Name": "Tonny",
+                    "id": 7
+                  }
+                ]
+              },
+              "Response": {
+                "runAfter": {
+                  "Compose": [
+                    "Succeeded"
+                  ]
+                },
+                "type": "Response",
+                "kind": "Http",
+                "inputs": {
+                  "body": "@outputs('Compose')",
+                  "headers": {
+                    "content-type": "application/json"
+                  },
+                  "statusCode": 200
+                }
+              }
+            },
+            "outputs": {}
+          },
+          "parameters": {}
+        }
+      }
+    ],
+    "outputs": {}
+  }
